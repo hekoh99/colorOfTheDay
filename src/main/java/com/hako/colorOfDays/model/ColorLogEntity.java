@@ -29,30 +29,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Entity
-@Table(name="ColorLog")
 public class ColorLogEntity {
     @Id
-    @GeneratedValue(generator = "system-id")
-    @GenericGenerator(name="system-id")
     private Integer id;
     private String userId;
     private String text;
     private Integer colorR;
     private Integer colorG;
     private Integer colorB;
+    private Integer date;
+    private Integer month;
+    private Integer year;
 
-    @CreatedDate
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private Date date;
-
-    public static ColorLogDto toDto(final ColorLogEntity entity) {
-        return ColorLogDto.builder()
-                .id(entity.getId())
-                .text(entity.getText())
-                .colorB(entity.getColorB())
-                .colorG(entity.getColorG())
-                .colorR(entity.getColorR())
-                .date(entity.getDate())
-                .build();
-    }
+    // @CreatedDate
+    // @DateTimeFormat(pattern = "yyyy-mm-dd")
+    // private Date createDate;
 }

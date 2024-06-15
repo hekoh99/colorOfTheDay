@@ -17,7 +17,9 @@ public class ColorLogDto {
     private Integer colorR;
     private Integer colorG;
     private Integer colorB;
-    private Date date;
+    private Integer date;
+    private Integer month;
+    private Integer year;
 
     public ColorLogDto(final ColorLogEntity entity) {
         this.id = entity.getId();
@@ -26,16 +28,20 @@ public class ColorLogDto {
         this.colorG = entity.getColorG();
         this.colorR = entity.getColorR();
         this.date = entity.getDate();
+        this.month = entity.getMonth();
+        this.year = entity.getYear();
     }
 
     public static ColorLogEntity toEntity(final ColorLogDto dto) {
         return ColorLogEntity.builder()
                 .id(dto.getId())
                 .text(dto.getText())
-                .colorB(dto.getColorB())
-                .colorG(dto.getColorG())
                 .colorR(dto.getColorR())
+                .colorG(dto.getColorG())
+                .colorB(dto.getColorB())
                 .date(dto.getDate())
+                .month(dto.getMonth())
+                .year(dto.getYear())
                 .build();
     }
 }

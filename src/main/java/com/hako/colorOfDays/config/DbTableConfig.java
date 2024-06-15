@@ -7,12 +7,12 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.hako.colorOfDays.persistence.ColorLogTableCreator;
+import com.hako.colorOfDays.persistence.ColorLogTableManager;
 
 @Configuration
 public class DbTableConfig {
     @Autowired
-	private ColorLogTableCreator tableCreator;
+	private ColorLogTableManager tableCreator;
     
     @Bean
     public ApplicationRunner applicationRunner() {
