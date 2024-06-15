@@ -9,5 +9,4 @@ public class ColorOfDaysApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ColorOfDaysApplication.class, args);
 	}
-
 }

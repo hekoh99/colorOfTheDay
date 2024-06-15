@@ -68,6 +68,7 @@ public class ColorLogService {
             colorLog.setColorG(entity.getColorG());
             colorLog.setColorR(entity.getColorR());
             colorLog.setText(entity.getText());
+            repository.save(entity);
         });
 
         log.info("Entity has updated");
