@@ -36,6 +36,66 @@ public class ColorLogController {
         return ResponseEntity.ok().body(response);
     }
 
+    @GetMapping
+    public ResponseEntity<?> retriveColorLog(@RequestBody ColorLogDto dto) {
+        ResponseDto<ColorLogDto> response = null;
+        BodyBuilder rBody = null;
+        try {
+            String tmpUserId = "tmp-user";
+            ColorLogEntity entity = ColorLogDto.toEntity(dto);
+
+            entity.setUserId(tmpUserId);
+
+            List<ColorLogDto> dtos = service.retrive(entity);
+            response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
+            rBody = ResponseEntity.ok();
+        } catch (Exception e) {
+            String error = e.getMessage();
+            response = ResponseDto.<ColorLogDto>builder().error(error).build();
+            rBody = ResponseEntity.badRequest();
+        }
+
+        return rBody.body(response);
+    }
+
+    /**
+     * @apiNote
+     * 특정 날짜의 colorlog 값을 가져옴
+     * ex) /colorLog/detail?date=19&year=2024&month=6
+     * @param dto
+     * @param year
+     * @param month
+     * @param date
+     * @return  ResponseEntity
+     */
+    @GetMapping("/detail")
+    public ResponseEntity<?> retriveDateColorLog(@RequestParam int year, @RequestParam int month, @RequestParam int date) {
+        ResponseDto<ColorLogDto> response = null;
+        BodyBuilder rBody = null;
+        try {
+            String tmpUserId = "tmp-user";
+            ColorLogEntity entity = ColorLogEntity.builder()
+                                        .userId(tmpUserId)
+                                        .date(date)
+                                        .month(month)
+                                        .year(year)
+                                        .build();
+
+            ColorLogDto resultDto = service.retriveByDate(entity);
+            List<ColorLogDto> dtos = new ArrayList<>();
+            dtos.add(resultDto);
+
+            response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
+            rBody = ResponseEntity.ok();
+        } catch (Exception e) {
+            String error = e.getMessage();
+            response = ResponseDto.<ColorLogDto>builder().error(error).build();
+            rBody = ResponseEntity.badRequest();
+        }
+
+        return rBody.body(response);
+    }
+
     @PostMapping
     public ResponseEntity<?> createColorLog(@RequestBody ColorLogDto dto) {
         ResponseDto<ColorLogDto> response = null;
@@ -45,7 +105,7 @@ public class ColorLogController {
             ColorLogEntity entity = ColorLogDto.toEntity(dto);
 
             entity.setUserId(tmpUserId);
-            //TODO: service를 통해 create color log 구현하기
+
             List<ColorLogDto> dtos = service.create(entity);
             response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
             rBody = ResponseEntity.ok();
@@ -55,6 +115,50 @@ public class ColorLogController {
             rBody = ResponseEntity.badRequest();
         }
 
+        return rBody.body(response);
+    }
+
+    @PutMapping
+    public ResponseEntity<?> updateColorLog(@RequestBody ColorLogDto dto) {
+        ResponseDto<ColorLogDto> response = null;
+        BodyBuilder rBody = null;
+
+        try {
+            String tmpUserId = "tmp-user";
+            ColorLogEntity entity = ColorLogDto.toEntity(dto);
+
+            entity.setUserId(tmpUserId);
+
+            List<ColorLogDto> dtos = service.update(entity);
+            response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
+            rBody = ResponseEntity.ok();
+        } catch (Exception e) {
+            String error = e.getMessage();
+            response = ResponseDto.<ColorLogDto>builder().error(error).build();
+            rBody = ResponseEntity.badRequest();
+        }
+        return rBody.body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteColorLog(@RequestBody ColorLogDto dto) {
+        ResponseDto<ColorLogDto> response = null;
+        BodyBuilder rBody = null;
+
+        try {
+            String tmpUserId = "tmp-user";
+            ColorLogEntity entity = ColorLogDto.toEntity(dto);
+
+            entity.setUserId(tmpUserId);
+
+            List<ColorLogDto> dtos = service.delete(entity);
+            response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
+            rBody = ResponseEntity.ok();
+        } catch (Exception e) {
+            String error = e.getMessage();
+            response = ResponseDto.<ColorLogDto>builder().error(error).build();
+            rBody = ResponseEntity.badRequest();
+        }
         return rBody.body(response);
     }
 }
