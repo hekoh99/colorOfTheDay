@@ -106,7 +106,10 @@ public class ColorLogController {
 
             entity.setUserId(tmpUserId);
 
-            List<ColorLogDto> dtos = service.create(entity);
+            ColorLogDto resultDto = service.create(entity);
+            List<ColorLogDto> dtos = new ArrayList<>();
+            dtos.add(resultDto);
+
             response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
             rBody = ResponseEntity.ok();
         } catch (Exception e) {
@@ -129,7 +132,10 @@ public class ColorLogController {
 
             entity.setUserId(tmpUserId);
 
-            List<ColorLogDto> dtos = service.update(entity);
+            ColorLogDto resultDto = service.update(entity);
+            List<ColorLogDto> dtos = new ArrayList<>();
+            dtos.add(resultDto);
+
             response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
             rBody = ResponseEntity.ok();
         } catch (Exception e) {

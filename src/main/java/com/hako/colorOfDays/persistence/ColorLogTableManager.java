@@ -146,19 +146,20 @@ public class ColorLogTableManager {
         try {
             String tableName = getTableName(entity);
             if (!checkIfTableExists(tableName)) {
-                String errorMsg = String.format("Target table does not exist [%s]", tableName);
-                throw new Exception(errorMsg);
+                // do nothing.
             }
-            String sql = String.format("select * from colorlog_%04d_%02d where date = %d;", entity.getYear(), entity.getMonth(), entity.getDate());
-            Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
-            Object[] row = (Object[])query.getSingleResult();
+            else {
+                String sql = String.format("select * from colorlog_%04d_%02d where date = %d;", entity.getYear(), entity.getMonth(), entity.getDate());
+                Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
+                Object[] row = (Object[])query.getSingleResult();
 
-            result.setId((Integer)row[0]);
-            result.setText((String)row[1]);
-            result.setDate((Integer)row[2]);
-            result.setColorR((Integer)row[3]);
-            result.setColorG((Integer)row[4]);
-            result.setColorB((Integer)row[5]);
+                result.setId((Integer)row[0]);
+                result.setText((String)row[1]);
+                result.setDate((Integer)row[2]);
+                result.setColorR((Integer)row[3]);
+                result.setColorG((Integer)row[4]);
+                result.setColorB((Integer)row[5]);
+            }
         } catch (Exception e) {
             String errorMsg = String.format("Error occured while excuting query [%s]", e.getMessage());
             log.error(errorMsg);

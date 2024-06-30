@@ -25,17 +25,17 @@ public class ColorLogService {
         return "hello world";
     }
 
-    public List<ColorLogDto> create(final ColorLogEntity entity) {
+    public ColorLogDto create(final ColorLogEntity entity) {
         //TODO: entity 유효성 검사 할 것.
         tableManager.insertColorLog(entity);
         log.info("entity has saved");
-        return tableManager.getColorLogByUserId(entity);
+        return tableManager.getColorLogByDate(entity);
     }
 
-    public List<ColorLogDto> update(final ColorLogEntity entity) {
+    public ColorLogDto update(final ColorLogEntity entity) {
         tableManager.updateColorLog(entity);
         log.info("entity has updated");
-        return tableManager.getColorLogByUserId(entity);
+        return tableManager.getColorLogByDate(entity);
     }
 
     public List<ColorLogDto> delete(final ColorLogEntity entity) {
