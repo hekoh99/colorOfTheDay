@@ -51,4 +51,8 @@ public class ColorLogService {
     public ColorLogDto retriveByDate(final ColorLogEntity entity) {
         return tableManager.getColorLogByDate(entity);
     }
+
+    public List<ColorLogDto> retriveMonth(final ColorLogEntity entity) {
+        return tableManager.getColorLogMonth(entity);
+    }
 }

@@ -60,6 +60,38 @@ public class ColorLogController {
 
     /**
      * @apiNote
+     * 특정 달의 colorlog 값을 date 순서로 정렬하여 가져옴
+     * e.g. /colorLog/monthly?year=2024&month=6
+     * @param year
+     * @param month
+     * @return  ResponseEntity
+     */
+    @GetMapping("/monthly")
+    public ResponseEntity<?> retriveMonthColorLog(@RequestParam int year, @RequestParam int month) {
+        ResponseDto<ColorLogDto> response = null;
+        BodyBuilder rBody = null;
+        try {
+            String tmpUserId = "tmp-user";
+            ColorLogEntity entity = ColorLogEntity.builder()
+                                        .userId(tmpUserId)
+                                        .month(month)
+                                        .year(year)
+                                        .build();
+
+            List<ColorLogDto> dtos = service.retriveMonth(entity);
+            response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
+            rBody = ResponseEntity.ok();
+        } catch (Exception e) {
+            String error = e.getMessage();
+            response = ResponseDto.<ColorLogDto>builder().error(error).build();
+            rBody = ResponseEntity.badRequest();
+        }
+
+        return rBody.body(response);
+    }
+
+    /**
+     * @apiNote
      * 특정 날짜의 colorlog 값을 가져옴
      * ex) /colorLog/detail?date=19&year=2024&month=6
      * @param dto

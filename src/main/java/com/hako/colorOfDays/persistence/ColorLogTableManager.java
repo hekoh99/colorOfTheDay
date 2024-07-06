@@ -38,7 +38,6 @@ public class ColorLogTableManager {
         if (result == 1) {
             return true;
         }
-        log.info("table does not exist");
         return false;
     }
 
@@ -92,6 +91,7 @@ public class ColorLogTableManager {
         entityManager.createNativeQuery(sql).executeUpdate();
     }
 
+    //TODO: 전체 colorlog 테이블을 조인하여 특정 user의 모든 colorlog 값을 리스트로 반환하도록 변경 필요
     @Transactional
     public List<ColorLogDto> getColorLogByUserId(ColorLogEntity entity) {
         String sql = String.format("select * from colorlog_%04d_%02d as ColorLog where ColorLog.userId = \"%s\";", entity.getYear(), entity.getMonth(), entity.getUserId());
@@ -166,4 +166,39 @@ public class ColorLogTableManager {
         }
         return result;
     }
+
+    /**
+     * 
+     * @param entity
+     * 
+     * @query
+     *  e.g. select * from colorlog_2024_06 where userId="tmp-user" order by date;
+     * @return
+     */
+    @Transactional
+    public List<ColorLogDto> getColorLogMonth(ColorLogEntity entity) {
+        String tableName = getTableName(entity);
+        if (!checkIfTableExists(tableName)) {
+            return new ArrayList<>(0);          // 해당 로그를 저장하는 테이블이 없다면 빈 배열을 반환.
+        }
+        String sql = String.format("select * from colorlog_%04d_%02d as ColorLog where ColorLog.userId = \"%s\" order by date;", entity.getYear(), entity.getMonth(), entity.getUserId());
+        Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
+        List<Object[]> rows = query.getResultList();
+
+        List<ColorLogDto> result = new ArrayList<>(rows.size());
+        for (Object[] row : rows) {
+                result.add(ColorLogDto.builder()
+                        .id((Integer)row[0])
+                        .text((String)row[1])
+                        .date((Integer)row[2])
+                        .colorR((Integer)row[3])
+                        .colorG((Integer)row[4])
+                        .colorB((Integer)row[5])
+                        .month(entity.getMonth())
+                        .year(entity.getYear())
+                        .build());
+        }
+        return result;
+    }
+
 }
