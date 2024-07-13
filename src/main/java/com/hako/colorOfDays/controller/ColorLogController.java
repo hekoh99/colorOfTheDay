@@ -37,14 +37,17 @@ public class ColorLogController {
     }
 
     @GetMapping
-    public ResponseEntity<?> retriveColorLog(@RequestBody ColorLogDto dto) {
+    public ResponseEntity<?> retriveColorLog(@RequestParam(required = false) Integer year, @RequestParam(required = false) Integer month) {
         ResponseDto<ColorLogDto> response = null;
         BodyBuilder rBody = null;
         try {
             String tmpUserId = "tmp-user";
-            ColorLogEntity entity = ColorLogDto.toEntity(dto);
 
-            entity.setUserId(tmpUserId);
+            ColorLogEntity entity = ColorLogEntity.builder()
+                                        .userId(tmpUserId)
+                                        .month(month)
+                                        .year(year)
+                                        .build();
 
             List<ColorLogDto> dtos = service.retrive(entity);
             response = ResponseDto.<ColorLogDto>builder().data(dtos).build();
@@ -67,7 +70,7 @@ public class ColorLogController {
      * @return  ResponseEntity
      */
     @GetMapping("/monthly")
-    public ResponseEntity<?> retriveMonthColorLog(@RequestParam int year, @RequestParam int month) {
+    public ResponseEntity<?> retriveMonthColorLog(@RequestParam Integer year, @RequestParam Integer month) {
         ResponseDto<ColorLogDto> response = null;
         BodyBuilder rBody = null;
         try {

@@ -27,6 +27,20 @@ public class ColorLogTableManager {
     }
 
     @Transactional
+    public List<String> getExistingTable() {
+        String sql = String.format("show tables like \"colorlog_%%_%%\";");
+        Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
+
+        List<String> rows = query.getResultList();
+        List<String> result = new ArrayList<>(rows.size());
+        for (String row : rows) {
+            result.add((String) row);
+        }
+
+        return result;
+    }
+
+    @Transactional
     public boolean checkIfTableExists(String tableName) {
         String sql = String.format("SELECT COUNT(*) FROM Information_schema.tables\n" + //
                         "WHERE table_schema = 'comd_db'\n" + //
@@ -94,7 +108,11 @@ public class ColorLogTableManager {
     //TODO: 전체 colorlog 테이블을 조인하여 특정 user의 모든 colorlog 값을 리스트로 반환하도록 변경 필요
     @Transactional
     public List<ColorLogDto> getColorLogByUserId(ColorLogEntity entity) {
-        String sql = String.format("select * from colorlog_%04d_%02d as ColorLog where ColorLog.userId = \"%s\";", entity.getYear(), entity.getMonth(), entity.getUserId());
+        if (!checkIfTableExists(getTableName(entity))) {             // 테이블이 존재하지 않으면 빈 배열 반환
+            List<ColorLogDto> emptyResult = new ArrayList<>(0);      // 비어있는 리스트 반환
+            return emptyResult;
+        }
+        String sql = String.format("select * from colorlog_%04d_%02d as ColorLog where ColorLog.userId = \"%s\" order by date;", entity.getYear(), entity.getMonth(), entity.getUserId());
         Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
         List<Object[]> rows = query.getResultList();
 
@@ -109,6 +127,35 @@ public class ColorLogTableManager {
                         .colorB((Integer)row[5])
                         .month(entity.getMonth())
                         .year(entity.getYear())
+                        .build());
+        }
+        return result;
+    }
+
+    @Transactional
+    public List<ColorLogDto> getColorLogByUserId(String tableName, String userName) {
+        if (!checkIfTableExists(tableName)) {    // 테이블이 존재하지 않으면 빈 배열 반환
+            List<ColorLogDto> emptyResult = new ArrayList<>(0);      // 비어있는 리스트 반환
+            return emptyResult;
+        }
+
+        String sql = String.format("select * from %s as ColorLog where ColorLog.userId = \"%s\" order by date;", tableName, userName);
+        Query query = entityManager.createNativeQuery(sql).unwrap(NativeQuery.class);
+        List<Object[]> rows = query.getResultList();
+        Integer year = Integer.parseInt(tableName.substring(9, 13));       // colorlog_%04d_%02d 형태 e.g. colorlog_2024_05
+        Integer month = Integer.parseInt(tableName.substring(14, 16));
+
+        List<ColorLogDto> result = new ArrayList<>(rows.size());
+        for (Object[] row : rows) {
+                result.add(ColorLogDto.builder()
+                        .id((Integer)row[0])
+                        .text((String)row[1])
+                        .date((Integer)row[2])
+                        .colorR((Integer)row[3])
+                        .colorG((Integer)row[4])
+                        .colorB((Integer)row[5])
+                        .month(month)
+                        .year(year)
                         .build());
         }
         return result;
